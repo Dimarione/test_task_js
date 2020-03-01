@@ -1,0 +1,22 @@
+
+.letters {
+    border: 1px solid white;
+}
+
+td {
+    border: 1px solid darkgrey;
+    height: 40px;
+    width: 40px;
+}
+
+.black {
+    background: black;
+}
+
+.blue {
+    background: blue;
+}
+
+.green {
+    background: green;
+}

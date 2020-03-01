@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>task_2</title>
+</head>
+<body>
+<div>
+	<label type='text' for='inputField'>Исходное положение</label><br>
+	<input type='text' id='inputField'><br>
+	<input type='button' id='btn' value='Ок'>
+</div>
+<script>
+	//array of literal values
+	var arrayOfLetter = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'];
+
+	//search index letters in the array
+	function getIndexOfLetter (letter) {
+		return arrayOfLetter.indexOf(letter.toUpperCase());
+	}
+
+	//getting field input value
+	function getValue (inputId) {
+		return document.getElementById(inputId).value;
+	}
+
+	//getting shape coordinates
+	function getArray (valueInput) {
+
+		var currentColumn = getIndexOfLetter(valueInput[0]);
+		var currenrRow = Number(valueInput[1]);
+		var resultCoordinates;
+		var finalArr = [];
+
+		for (var i = -2; i <= 2; i++) {
+			for (var j = -2; j <= 2; j++) {
+				if ((i !== j) && (i !== 0) && (j !== 0) && (i !== -j)) {
+					resultCoordinates = currentColumn + i;
+					if (resultCoordinates < 0 || resultCoordinates > 7) {
+						continue;
+					}
+					resultCoordinates = currenrRow + j - 1;
+					if (resultCoordinates < 0 || resultCoordinates > 7) {
+						continue;
+					}
+					finalArr.push(arrayOfLetter[currentColumn + i] + (currenrRow + j));
+				}
+			}
+		}
+		return finalArr;
+	}
+
+	//validation test
+	function isValid (value) {
+		if (value.length !== 2) {
+			return false
+		}
+
+		var index = getIndexOfLetter(value[0]);
+		if (index < 0 || index > 7) {
+			return false;
+		}
+		index = Number(value[1] - 1);
+		if (index < 0 || index > 7) {
+			return false;
+		}
+
+		return true;
+	}
+
+	//output of the result
+	function onButtonClick () {
+		var valueInputField = getValue('inputField');
+		if (isValid(valueInputField)) {
+			alert(getArray(valueInputField));
+		}
+		else {
+			alert('Введены не верные данные');
+		}
+
+	}
+	document.getElementById('btn').onclick = onButtonClick;
+</script>
+</body>
+</html>

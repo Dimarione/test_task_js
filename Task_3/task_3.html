@@ -1,0 +1,253 @@
+﻿<!doctype html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<link rel="stylesheet" href="style.css">
+	<title>task_3</title>
+</head>
+<body>
+<div class="game">
+	<table id="playing-field" cellpadding="7" cellspacing="0">
+		<tr>
+			<td id="0"></td>
+			<td id="1"></td>
+			<td id="2"></td>
+			<td id="3"></td>
+		</tr>
+		<tr>
+			<td id="4"></td>
+			<td id="5"></td>
+			<td id="6"></td>
+			<td id="7"></td>
+		</tr>
+		<tr>
+			<td id="8"></td>
+			<td id="9"></td>
+			<td id="10"></td>
+			<td id="11"></td>
+		</tr>
+		<tr>
+			<td id="12"></td>
+			<td id="13"></td>
+			<td id="14"></td>
+			<td id="15"></td>
+		</tr>
+	</table>
+	<!--<input type="button" id="startButton" value="Старт" onclick="StartTimer()">-->
+	<div id="timer"></div>
+	<!--Форма для Секундомера-->
+	<form name=MyForm>
+		<input type=button value="Старт" onclick="StartStop()"><br>
+		<input name=stopwatch size=10 value="00:00.00">
+	</form>
+</div>
+<script>
+	var firstId = null;
+	/*variable storing the first cell id*/
+	var secondtId = null;
+	/*variable storing the second cell id*/
+	var currentCount = 0;
+	/*variable storing state*/
+	var cellNum = 16;
+	/*cell count*/
+	var cells = [];
+	/*массив c случайно сгенерированными индексами*/
+	var colors = [];
+	/*color index array*/
+
+	var table = document.getElementById('playing-field');
+	var selectedTd;
+
+	table.onclick = function (event) {
+		var target = event.target;
+
+		while (target !== table) {
+			paintingCell(target);
+			return;
+		}
+	}
+
+	function paintingCell (cell) {
+		var cellsId = cell.id;
+		console.log(cellsId);
+		var currentState = getCurentState(cellsId);
+
+		switch (currentState) {
+			case 'firstClick':
+				firstId = cellsId;
+				openCell(cell, cellsId);
+				selectedTd = cell;
+				break;
+			case 'secondClick':
+				secondtId = cellsId;
+				if (!isColored(cellsId)) {
+					openCell(cell, cellsId);
+					if (hasDifferentColor(firstId, secondtId)) {
+						resetCellsColor(selectedTd);
+						resetCellsColor(cell);
+					} else {
+						currentCount += 1;
+						if (currentCount === 8) {
+							alert('Вы выйграли!\nЗатраченное время: ' + dm + ':' + ds + '.' + ms);
+						}
+					}
+					firstId = null;
+					secondtId = null;
+				}
+				break;
+		}
+	}
+
+	/*filling the colors array with available colors*/
+	for (var i = 0; i < cellNum / 2; i++) {
+		colors.push(i + 1);
+		colors.push(i + 1);
+	}
+
+	/*choose a color for each cell at random from the array of available colors*/
+	for (var i = 0; i < cellNum; i++) {
+		var selected = randomInteger(0, cellNum - i - 1);
+
+		cells.push(colors[selected]);
+		colors.splice(selected, 1);
+	}
+
+	/*random number generator*/
+	function randomInteger (min, max) {
+		var rand = min - 0.5 + Math.random() * (max - min + 1);
+		rand = Math.round(rand);
+		return rand;
+	}
+
+	/*whether cell is filled*/
+	function isColored (cellsId) {
+		var result = false;
+		var cell = document.getElementById(cellsId);
+		if (cell.className !== "") {
+			result = true;
+		}
+		return result;
+	}
+
+	/*current program status*/
+	function getCurentState (cellsId) {
+		secondtId = cellsId;//--
+		var status;
+		if (firstId != null && firstId !== cellsId) {
+			status = 'secondClick';
+		}
+		else {
+			status = 'firstClick';
+		}
+		return status;
+	}
+
+	function hasDifferentColor (firstId, secondId) {
+		var result;
+		return cells[firstId] !== cells[secondId];
+	}
+
+	function openCell (cell, cellsId) {
+		cell.classList.add('color' + cells[cellsId]);
+	}
+
+	function resetCellsColor (filledCell) {
+		filledCell.classList.remove(filledCell.className);
+	}
+
+	/*copy paste code*/
+	var base = 60;
+	var clocktimer, dateObj, dh, dm, ds, ms;
+	var readout = '';
+	var h = 1, m = 1, tm = 1, s = 0, ts = 0, ms = 0, init = 0;
+
+	function ClearСlock () {
+		clearTimeout(clocktimer);
+		h = 1;
+		m = 1;
+		tm = 1;
+		s = 0;
+		ts = 0;
+		ms = 0;
+		init = 0;
+		readout = '00:00.00';
+		document.MyForm.stopwatch.value = readout;
+	}
+
+	function StartTIME () {
+		var cdateObj = new Date();
+		var t = (cdateObj.getTime() - dateObj.getTime()) - (s * 1000);
+		if (t > 999) {
+			s++;
+		}
+		if (s >= (m * base)) {
+			ts = 0;
+			m++;
+		} else {
+			ts = parseInt((ms / 100) + s);
+			if (ts >= base) {
+				ts = ts - ((m - 1) * base);
+			}
+		}
+		if (m > (h * base)) {
+			tm = 1;
+			h++;
+		} else {
+			tm = parseInt((ms / 100) + m);
+			if (tm >= base) {
+				tm = tm - ((h - 1) * base);
+			}
+		}
+		ms = Math.round(t / 10);
+		if (ms > 99) {
+			ms = 0;
+		}
+		if (ms == 0) {
+			ms = '00';
+		}
+		if (ms > 0 && ms <= 9) {
+			ms = '0' + ms;
+		}
+		if (ts > 0) {
+			ds = ts;
+			if (ts < 10) {
+				ds = '0' + ts;
+			}
+		} else {
+			ds = '00';
+		}
+		dm = tm - 1;
+		if (dm > 0) {
+			if (dm < 10) {
+				dm = '0' + dm;
+			}
+		} else {
+			dm = '00';
+		}
+		dh = h - 1;
+		if (dh > 0) {
+			if (dh < 10) {
+				dh = '0' + dh;
+			}
+		} else {
+			dh = '00';
+		}
+		readout = dm + ':' + ds + '.' + ms;
+		document.MyForm.stopwatch.value = readout;
+		clocktimer = setTimeout("StartTIME()", 1);
+	}
+
+	function StartStop () {
+		if (init == 0) {
+			ClearСlock();
+			dateObj = new Date();
+			StartTIME();
+			init = 1;
+		} else {
+			clearTimeout(clocktimer);
+			init = 0;
+		}
+	}
+</script>
+</body>
+</html>

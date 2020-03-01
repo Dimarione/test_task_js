@@ -1,0 +1,46 @@
+
+#playing-field {
+    border: 1px solid darkgrey;
+}
+
+#playing-field td {
+    border: 1px solid darkgrey;
+    width: 40px;
+    height: 40px;
+}
+
+.color1 {
+    background: red;
+}
+
+.color2 {
+    background: yellow;
+}
+
+.color3 {
+    background: blue;
+}
+
+.color4 {
+    background: green;
+}
+
+.color5 {
+    background: orange;
+}
+
+.color6 {
+    background: grey;
+}
+
+.color7 {
+    background: deepskyblue;
+}
+
+.color8 {
+    background: mediumvioletred;
+}
+
+.highlight {
+    background: red;
+}
